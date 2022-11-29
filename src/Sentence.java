@@ -1,4 +1,3 @@
-package main;
 public class Sentence implements java.io.Serializable {
 	String 		data;
 	public Sentence() {
