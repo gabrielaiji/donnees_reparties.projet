@@ -1,31 +1,29 @@
-public enum EtatLockServer = {NL, RL, WL}
+import java.rmi.server.UnicastRemoteObject;
+import java.rmi.RemoteException;
 
-public class ServerObject extends UnicastRemoteObject implements SharedObject{
+public class ServerObject extends UnicastRemoteObject implements ServerObject_itf{
 	public EtatLockServer etat;
 	public int id;
 	public Object object;
 
-	public ServerObject(){
-		etat = NL;
-	}
-
-	public ServerObject(Object o){
-		etat = NL;
-		object = o;
+	public ServerObject(int id, Object object) throws RemoteException{
+		this.id = id;
+		this.object = object;
+		this.etat = EtatLockServer.NL;
 	}
 
 	public void lock_read(){
 		switch(etat){
 
 			case NL:
-				etat = RL;
+				etat = EtatLockServer.RL;
 				break;
 			case RL:
-				etat = RL;
-				break
+				etat = EtatLockServer.RL;
+				break;
 			case WL:
 				//TO DO : blocage : callback
-				etat = RL;
+				etat = EtatLockServer.RL;
 				break;
 
 		}
@@ -34,15 +32,15 @@ public class ServerObject extends UnicastRemoteObject implements SharedObject{
 		switch(etat){
 
 			case NL:
-				etat = WL;
+				etat = EtatLockServer.WL;
 				break;
 			case RL:
 				//TO DO : blocage : callback
-				etat = WL;
-				break
+				etat = EtatLockServer.WL;
+				break;
 			case WL:
 				//TO DO : blocage : callback
-				etat = WL;
+				etat = EtatLockServer.WL;
 				break;
 
 		}
@@ -52,15 +50,15 @@ public class ServerObject extends UnicastRemoteObject implements SharedObject{
 		switch(etat){
 
 			case NL:
-				etat = NL;
+				etat = EtatLockServer.NL;
 				break;
 			case RL:
 				//TO DO : déblocage : appeler le callback
-				etat = WL;
-				break
+				etat = EtatLockServer.WL;
+				break;
 			case WL:
 				//TO DO : déblocage : appeler le callback
-				etat = WL;
+				etat = EtatLockServer.WL;
 				break;
 
 		}
