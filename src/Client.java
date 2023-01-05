@@ -25,6 +25,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void init() {
 		try{
 			client = new Client();
+			connectToServer();
 			id_to_Objects = new HashMap<Integer, SharedObject>();
 		}
 		catch(Exception e){
@@ -37,7 +38,13 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 		try{
 			int id = server.lookup(name);
-			return id_to_Objects.get(id);
+			if (id != -1){
+				return id_to_Objects.get(id);
+			}
+			else{
+				return null;
+			}
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -46,10 +53,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}		
 	
 	// binding in the name server
-	public static void register(String name, SharedObject_itf so) {
+	public static void register(String name, SharedObject so) {
 		try{
 			int id = server.lookup(name);
-			SharedObject sharedObj = (SharedObject) so;
+			SharedObject sharedObj = so;
 			if(id == -1){
 				id = server.create(sharedObj.obj);
 			}
@@ -76,10 +83,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		return null;
 	}
 
-	public static void connectToServer(String name){
+	public static void connectToServer(){
 		int port = 4000;
 		try {
-			server = (Server_itf) Naming.lookup("//localhost:"+port+"/"+name);
+			server = (Server_itf) Naming.lookup("//localhost:"+port+"/nameserver");
 		}catch(Exception e){
 			e.printStackTrace();
 		}

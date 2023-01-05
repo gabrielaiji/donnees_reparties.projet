@@ -1,17 +1,26 @@
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+// utiliser en plus  java.util.concurrent.locks.Condition; ??
 
 public class SharedObject extends UnicastRemoteObject implements Serializable, SharedObject_itf {
 	public EtatLockClient etat;
 	public Object obj;
 	public int id;
 	public Client client;
+	
+	public Lock moniteurWrite;
+	public Lock moniteurRead;
 
 	public SharedObject(Client client, int id, Object object) throws RemoteException{
 		this.obj = object;
 		this.id = id;
 		this.client = client;
+
+		this.moniteurWrite = new ReentrantLock();
+		this.moniteurRead = new ReentrantLock();
 	}
 
 	// invoked by the user program on the client node

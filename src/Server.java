@@ -42,11 +42,11 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	public Object lock_read(int id, Client_itf client) throws java.rmi.RemoteException{
 
 		if(! id_to_Objects.containsKey(id)){
-			//TODO
+			System.err.println("id n'existe pas (lock_read)");
 		}
 
 		ServerObject_itf object = id_to_Objects.get(id);
-		object.lock_read();
+		object.lock_read(client);
 
 		return object;
 	}
@@ -55,11 +55,11 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	public Object lock_write(int id, Client_itf client) throws java.rmi.RemoteException{
 
 		if(! id_to_Objects.containsKey(id)){
-			//TODO
+			System.err.println("id n'existe pas (lock_write)");
 		}
 
 		ServerObject_itf object = id_to_Objects.get(id);
-		object.lock_write();
+		object.lock_write(client);
 
 		return object;
 	}
@@ -72,10 +72,10 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		try {
 			System.out.println("Launch of Server");
 			int port = 4000;
-			Server_itf server = new Server();
+			Server server = new Server();
 			Registry registry = LocateRegistry.createRegistry(port);
 			
-			Naming.rebind("//localhost:"+port, server);
+			Naming.rebind("//localhost:"+port+"/nameserver", server);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
