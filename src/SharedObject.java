@@ -18,6 +18,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.obj = object;
 		this.id = id;
 		this.client = client;
+		this.etat = EtatLockClient.NL;
 
 		this.moniteurWrite = new ReentrantLock();
 		this.moniteurRead = new ReentrantLock();
@@ -25,6 +26,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 
 	// invoked by the user program on the client node
 	public void lock_read() {
+		
 		try{
 			switch(etat){
 				case NL:
@@ -46,9 +48,11 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 
 	// invoked by the user program on the client node
 	public void lock_write() {
+
 		switch(etat){
 
 			case NL:
+				Client.lock_write(id);
 			case WLC:
 			case RLC:
 				etat = EtatLockClient.WLT;
@@ -66,12 +70,14 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			case WLT:
 			case RLT_WLC:
 				etat = EtatLockClient.WLC;
+				this.notify();
 				break;
 			case RLT:
 				etat = EtatLockClient.RLC;
+				this.notify();
 				break;
 			default:
-				//TODO
+				System.out.println("unlock etat illogique : " +etat.toString());
 
 		}
 	}
@@ -81,14 +87,27 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 	public synchronized Object reduce_lock() {
 		switch(etat){
 
+			case WLC:
+				etat = EtatLockClient.RLC;
+				break;
 			case WLT:
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				etat = EtatLockClient.RLC;
 				break;
 			case RLT_WLC:
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				etat = EtatLockClient.RLT;
 				break;
 			default:
-				//TODO
+				System.out.println("reduce_lock etat illogique : " +etat.toString());
 		}
 		return obj; //A VERIF
 	}
@@ -98,11 +117,18 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		switch(etat){
 
 			case RLC:
+				etat = EtatLockClient.NL;
+				break;
 			case RLT:
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				etat = EtatLockClient.NL;
 				break;
 			default:
-				//TODO
+				System.out.println("invalidate_reader etat illogique : " +etat.toString());
 		}
 	}
 
@@ -110,12 +136,20 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		switch(etat){
 
 			case WLC:
-			case WLT:
-			case RLT_WLC:
 				etat = EtatLockClient.NL;
 				break;
-			default:
-				//TODO
+			case WLT:
+			case RLT_WLC:
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				etat = EtatLockClient.NL;
+				break;
+			default :
+				System.out.println("invalidate_writer etat illogique : " +etat.toString());
+				
 		}
 		return obj;
 	}

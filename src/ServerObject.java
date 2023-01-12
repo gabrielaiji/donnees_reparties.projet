@@ -50,10 +50,24 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				etat = EtatLockServer.WL;
 				break;
 			case RL:
+				for(Client_itf c : clients){
+					try{
+						c.invalidate_reader(id);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;
 			case WL:
+				for(Client_itf c : clients){
+					try{
+						c.invalidate_writer(id);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;

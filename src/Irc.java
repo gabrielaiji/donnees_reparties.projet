@@ -77,7 +77,12 @@ class readListener implements ActionListener {
 		
 		// invoke the method
 		String s = ((Sentence)(irc.sentence.obj)).read();
-		
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e1) {
+
+			e1.printStackTrace();
+		}
 		// unlock the object
 		irc.sentence.unlock();
 		
@@ -102,6 +107,13 @@ class writeListener implements ActionListener {
 		// invoke the method
 		((Sentence)(irc.sentence.obj)).write(Irc.myName+" wrote "+s);
 		irc.data.setText("");
+
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e1) {
+
+			e1.printStackTrace();
+		}
 		
 		// unlock the object
 		irc.sentence.unlock();

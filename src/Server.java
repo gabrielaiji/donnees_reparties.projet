@@ -40,7 +40,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public Object lock_read(int id, Client_itf client) throws java.rmi.RemoteException{
-
+		System.out.println("Received lock_read request of "+id);
 		if(! id_to_Objects.containsKey(id)){
 			System.err.println("id n'existe pas (lock_read)");
 		}
@@ -53,7 +53,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 
 	public Object lock_write(int id, Client_itf client) throws java.rmi.RemoteException{
-
+		System.out.println("Received lock_write request of "+id);
 		if(! id_to_Objects.containsKey(id)){
 			System.err.println("id n'existe pas (lock_write)");
 		}
