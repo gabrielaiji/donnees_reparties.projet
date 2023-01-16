@@ -45,10 +45,10 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 			System.err.println("id n'existe pas (lock_read)");
 		}
 
-		ServerObject_itf object = id_to_Objects.get(id);
-		object.lock_read(client);
+		ServerObject server_object = id_to_Objects.get(id);
+		Object obj =  server_object.lock_read(client);
 
-		return object;
+		return obj;
 	}
 
 
@@ -58,10 +58,10 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 			System.err.println("id n'existe pas (lock_write)");
 		}
 
-		ServerObject_itf object = id_to_Objects.get(id);
-		object.lock_write(client);
+		ServerObject server_object = id_to_Objects.get(id);
+		Object obj = server_object.lock_write(client);
 
-		return object;
+		return obj;
 	}
 
 	public int createId(){

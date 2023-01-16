@@ -104,7 +104,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			e.printStackTrace();
 		}
 		SharedObject sharedObj = id_to_Objects.get(id);
-		return sharedObj.etat;
+		return sharedObj.obj;
 	}
 
 	// request a write lock from the server
@@ -115,14 +115,14 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			e.printStackTrace();
 		}
 		SharedObject sharedObj = id_to_Objects.get(id);
-		return sharedObj.etat;
+		return sharedObj.obj;
 	}
 
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException {
 		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.reduce_lock();
-		return sharedObj.etat;
+		return sharedObj.obj;
 	}
 
 
@@ -137,6 +137,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
 		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.invalidate_writer();
-		return sharedObj.etat;
+		return sharedObj.obj;
 	}
 }

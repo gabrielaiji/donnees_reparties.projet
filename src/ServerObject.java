@@ -17,7 +17,8 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		clients = new ArrayList<Client_itf>();
 	}
 
-	public void lock_read(Client_itf client){
+	public Object lock_read(Client_itf client){
+		Object obj = this.object;
 		switch(etat){
 
 			case NL:
@@ -31,7 +32,8 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 			case WL:
 				for(Client_itf c : clients){
 					try{
-						c.reduce_lock(id);
+						obj = c.reduce_lock(id);
+						this.object = obj;
 					}catch(Exception e){
 						e.printStackTrace();
 					}
@@ -39,10 +41,11 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				clients.add(client);
 				etat = EtatLockServer.RL;
 				break;
-
 		}
+		return obj;
 	}
-	public void lock_write(Client_itf client){
+	public Object lock_write(Client_itf client){
+		Object obj = this.object;
 		switch(etat){
 
 			case NL:
@@ -63,7 +66,8 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 			case WL:
 				for(Client_itf c : clients){
 					try{
-						c.invalidate_writer(id);
+						obj = c.invalidate_writer(id);
+						this.object = obj;
 					}catch(Exception e){
 						e.printStackTrace();
 					}
@@ -71,11 +75,11 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;
-
 		}
+		return obj;
 	}
 
-	public void unlock(Client_itf client){
+	public void unlock(Client_itf client){ //Inutile ?
 		switch(etat){
 
 			case NL:
@@ -100,5 +104,7 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				break;
 
 		}
+
+		return ;
 	}
 }

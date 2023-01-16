@@ -30,7 +30,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		try{
 			switch(etat){
 				case NL:
-					Client.lock_read(id);
+					this.obj = Client.lock_read(id);
 				case RLC:
 					etat = EtatLockClient.RLT;
 					break;
@@ -52,7 +52,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		switch(etat){
 
 			case NL:
-				Client.lock_write(id);
+				this.obj = Client.lock_write(id);
 			case WLC:
 			case RLC:
 				etat = EtatLockClient.WLT;
@@ -109,7 +109,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			default:
 				System.out.println("reduce_lock etat illogique : " +etat.toString());
 		}
-		return obj; //A VERIF
+		return obj;
 	}
 
 	// callback invoked remotely by the server
