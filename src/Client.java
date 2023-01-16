@@ -1,5 +1,6 @@
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.chrono.ThaiBuddhistChronology;
 import java.util.HashMap;
 import java.rmi.registry.*;
 import java.rmi.Naming;
@@ -39,27 +40,33 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			int id = server.lookup(name);
 			if (id != -1){
-				return id_to_Objects.get(id);
+				//lock_read ?
+				//Object obj = server.lock_read(id, client);
+				SharedObject s = new SharedObject(client, id);
+				
+				//s.etat = EtatLockClient.RLC;
+				id_to_Objects.put(id, s);
+				return s;
 			}
 			else{
+				System.out.println(name + " does not exits");
 				return null;
 			}
 			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println("lookup failed !");
 		return null;
 
 	}		
 	
 	// binding in the name server
-	public static void register(String name, SharedObject so) {
+	public static void register(String name, SharedObject so) {// Pk le SharedObject et pas l'obj directement ?
 		try{
-			int id = server.lookup(name);
-			SharedObject sharedObj = so;
-			if(id == -1){
-				id = server.create(sharedObj.obj);
-			}
+			//int id = server.lookup(name);
+			//SharedObject sharedObj = so;
+			int id = so.id;
 
 			server.register(name, id);
 
@@ -74,7 +81,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			int id = server.create(o);
 			SharedObject so = new SharedObject(client, id, o);
 			id_to_Objects.put(id, so);
-			//TODO descripteur
+			//TODO descripteur : en fait non ?
 			return so;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -98,28 +105,37 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// request a read lock from the server
 	public static Object lock_read(int id) {
+		SharedObject sharedObj = id_to_Objects.get(id);
+		Object obj = sharedObj.obj;
+		System.out.println("\nRequesting lock_read for object " +id);
 		try{
-			server.lock_read(id, client);
+			obj = server.lock_read(id, client);
+			System.out.println("Request finished correctly\n");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		SharedObject sharedObj = id_to_Objects.get(id);
-		return sharedObj.obj;
+		
+		return obj;
 	}
 
 	// request a write lock from the server
 	public static Object lock_write (int id) {
+		System.out.println("\nRequesting lock_write for object " +id);
+		SharedObject sharedObj = id_to_Objects.get(id);
+		Object obj = sharedObj.obj;
 		try{
-			server.lock_write(id, client);
+			obj = server.lock_write(id, client);
+			System.out.println("Request finished correctly\n");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		SharedObject sharedObj = id_to_Objects.get(id);
-		return sharedObj.obj;
+		
+		return obj;
 	}
 
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException {
+		System.out.println("Received lock_reduction for object " +id);
 		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.reduce_lock();
 		return sharedObj.obj;
@@ -128,6 +144,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a reader invalidation request from the server
 	public void invalidate_reader(int id) throws java.rmi.RemoteException {
+		System.out.println("Received invalidate_reader for object " +id);
 		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.invalidate_reader();
 	}
@@ -135,6 +152,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
+		System.out.println("Received invalidate_writer for object " +id);
 		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.invalidate_writer();
 		return sharedObj.obj;

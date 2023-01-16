@@ -68,6 +68,14 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		return idCompteur++;
 	}
 
+	public Object getServerVersionObject(int id){
+		if(! id_to_Objects.containsKey(id)){
+			System.err.println("id n'existe pas (getServerVersionObject)");
+		}
+		ServerObject server_object = id_to_Objects.get(id);
+		return server_object.object;
+	}
+
 	public static void main(String[] args){
 		try {
 			System.out.println("Launch of Server");

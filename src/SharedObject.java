@@ -24,6 +24,15 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.moniteurRead = new ReentrantLock();
 	}
 
+	public SharedObject(Client client, int id) throws RemoteException{
+		this.id = id;
+		this.client = client;
+		this.etat = EtatLockClient.NL;
+
+		this.moniteurWrite = new ReentrantLock();
+		this.moniteurRead = new ReentrantLock();
+	}
+
 	// invoked by the user program on the client node
 	public void lock_read() {
 		
