@@ -23,7 +23,7 @@ public class Irc extends Frame {
 		myName = argv[0];
 	
 		// initialize the system
-		Client.init();
+		Client.init(myName);
 		
 		// look up the IRC object in the name server
 		// if not found, create it, and register it in the name server
@@ -78,7 +78,7 @@ class readListener implements ActionListener {
 		// invoke the method
 		String s = ((Sentence)(irc.sentence.obj)).read();
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(100);
 		} catch (InterruptedException e1) {
 
 			e1.printStackTrace();
@@ -109,7 +109,7 @@ class writeListener implements ActionListener {
 		irc.data.setText("");
 
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(100);
 		} catch (InterruptedException e1) {
 
 			e1.printStackTrace();

@@ -42,6 +42,7 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				etat = EtatLockServer.RL;
 				break;
 		}
+		printEtats("lock_read()");
 		return obj;
 	}
 	public Object lock_write(Client_itf client){
@@ -60,6 +61,7 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 						e.printStackTrace();
 					}
 				}
+				clients = new ArrayList<Client_itf>();
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;
@@ -72,10 +74,12 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 						e.printStackTrace();
 					}
 				}
+				clients = new ArrayList<Client_itf>();
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;
 		}
+		printEtats("lock_write()");
 		return obj;
 	}
 
@@ -104,7 +108,24 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				break;
 
 		}
-
+		printEtats("unlock()");
 		return ;
+	}
+
+	public void printEtats(String func){
+		System.out.println("---------------------");
+		System.out.println("Objet "+id+" ("+func+")");
+		System.out.println("Etat : "+etat);
+		System.out.print("Clients : ");
+		try{
+			for(Client_itf client : clients){
+				System.out.print(client.getName() +";");
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		System.out.println();
+		
 	}
 }

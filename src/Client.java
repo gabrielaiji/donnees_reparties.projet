@@ -12,9 +12,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	//public static HashMap<String, SharedObject> name_to_Objects;
 	public static Server_itf server;
 	public static Client client;
+	//TODO :remove
+	public static String name;
 
 	public Client() throws RemoteException {
 		super();
+	}
+
+	public String getName() throws java.rmi.RemoteException{
+		return name;
 	}
 
 
@@ -23,11 +29,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 ///////////////////////////////////////////////////
 
 	// initialization of the client layer
-	public static void init() {
+	public static void init(String n) {
 		try{
 			client = new Client();
 			connectToServer();
 			id_to_Objects = new HashMap<Integer, SharedObject>();
+			name = n;
 		}
 		catch(Exception e){
 			e.printStackTrace();

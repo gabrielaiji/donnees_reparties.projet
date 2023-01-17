@@ -53,6 +53,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println("lock_read fini, etat = " +etat.toString());
 	}
 
 	// invoked by the user program on the client node
@@ -61,15 +62,16 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		switch(etat){
 
 			case NL:
+			case RLC:
 				this.obj = Client.lock_write(id);
 			case WLC:
-			case RLC:
 				etat = EtatLockClient.WLT;
 				break;
 			default:
 				//TODO
 
 		}
+		System.out.println("lock_write fini, etat = " +etat.toString());
 	}
 
 	// invoked by the user program on the client node
@@ -89,6 +91,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				System.out.println("unlock etat illogique : " +etat.toString());
 
 		}
+		System.out.println("unlock fini, etat = " +etat.toString());
 	}
 
 
@@ -118,6 +121,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			default:
 				System.out.println("reduce_lock etat illogique : " +etat.toString());
 		}
+		System.out.println("reduce_lock fini, etat = " +etat.toString());
 		return obj;
 	}
 
@@ -139,6 +143,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			default:
 				System.out.println("invalidate_reader etat illogique : " +etat.toString());
 		}
+		System.out.println("invalidate_reader fini, etat = " +etat.toString());
 	}
 
 	public synchronized Object invalidate_writer() {
@@ -160,6 +165,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				System.out.println("invalidate_writer etat illogique : " +etat.toString());
 				
 		}
+		System.out.println("invalidate_writer fini, etat = " +etat.toString());
 		return obj;
 	}
 }
