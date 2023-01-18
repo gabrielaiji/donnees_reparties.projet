@@ -12,7 +12,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	//public static HashMap<String, SharedObject> name_to_Objects;
 	public static Server_itf server;
 	public static Client client;
-	//TODO :remove
+	//TODO :remove name
 	public static String name;
 
 	public Client() throws RemoteException {
@@ -47,7 +47,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			int id = server.lookup(name);
 			if (id != -1){
-				SharedObject s = new SharedObject(client, id);
+				SharedObject s = new Sentence_stub(client, id);
 				
 				id_to_Objects.put(id, s);
 				return s;
@@ -66,11 +66,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}		
 	
 	// binding in the name server
-	public static void register(String name, SharedObject so) {// Pk le SharedObject et pas l'obj directement ?
+	public static void register(String name, SharedObject_itf so) {// Pk le SharedObject et pas l'obj directement ?
 		try{
 			//int id = server.lookup(name);
-			//SharedObject sharedObj = so;
-			int id = so.id;
+			SharedObject sharedObj = (SharedObject) so; //TODO : trouver mieux ?
+
+			int id = sharedObj.id;
 
 			server.register(name, id);
 
@@ -83,7 +84,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static SharedObject create(Object o) {
 		try{
 			int id = server.create(o);
-			SharedObject so = new SharedObject(client, id, o);
+			SharedObject so = new Sentence_stub(client, id, o);
 			id_to_Objects.put(id, so);
 			//TODO descripteur : en fait non ?
 			return so;

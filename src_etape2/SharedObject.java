@@ -11,7 +11,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 	public int id;
 	public Client client;
 	
-	public Lock droit_de_modif_etat;
+	public Lock moniteurWrite;
+	public Lock moniteurRead;
 
 	public SharedObject(Client client, int id, Object object) throws RemoteException{
 		this.obj = object;
@@ -19,7 +20,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.client = client;
 		this.etat = EtatLockClient.NL;
 
-		this.droit_de_modif_etat = new ReentrantLock();
+		this.moniteurWrite = new ReentrantLock();
+		this.moniteurRead = new ReentrantLock();
 	}
 
 	public SharedObject(Client client, int id) throws RemoteException{
@@ -27,7 +29,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.client = client;
 		this.etat = EtatLockClient.NL;
 
-		this.droit_de_modif_etat = new ReentrantLock();
+		this.moniteurWrite = new ReentrantLock();
+		this.moniteurRead = new ReentrantLock();
 	}
 
 	// invoked by the user program on the client node
@@ -108,6 +111,11 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				etat = EtatLockClient.RLC;
 				break;
 			case RLT_WLC:
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				etat = EtatLockClient.RLT;
 				break;
 			default:
