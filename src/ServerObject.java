@@ -24,15 +24,12 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		clients = new ArrayList<Client_itf>();
 	}
 
-	public Object lock_read(Client_itf client){
+	public synchronized Object lock_read(Client_itf client){
 		droit_de_modif_etat.lock();
 		Object obj = this.object;
 		switch(etat){
 
 			case NL:
-				clients.add(client);
-				etat = EtatLockServer.RL;
-				break;
 			case RL:
 				clients.add(client);
 				etat = EtatLockServer.RL;
@@ -56,7 +53,7 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		}
 		return obj;
 	}
-	public Object lock_write(Client_itf client){
+	public synchronized Object lock_write(Client_itf client){
 		droit_de_modif_etat.lock();
 		Object obj = this.object;
 		switch(etat){
@@ -98,15 +95,13 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		return obj;
 	}
 
-	public void unlock(Client_itf client){ //Inutile ?
+	public synchronized void unlock(Client_itf client){ //Inutile ?
 		droit_de_modif_etat.lock();
 		switch(etat){
 
 			case NL:
 				etat = EtatLockServer.NL;
-				if(affiche){
-					System.out.println("Unlock objet deja unlocked ?");
-				}
+				System.out.println("Unlock objet deja unlocked ?");
 				break;
 			case RL:
 				clients.remove(client);
@@ -120,9 +115,7 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 					etat = EtatLockServer.NL;
 				}
 				else{
-					if(affiche){
-						System.err.println("Il y avait plusieurs redacteurs ?");
-					}
+					System.err.println("Il y avait plusieurs redacteurs ?");
 				}
 				
 				break;

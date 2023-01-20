@@ -1,96 +1,19 @@
 
-SYNCHRO does not exits
-
-Requesting lock_write for object 0
-
-Requesting lock_read for object 0
-
-Requesting lock_read for object 0
-Request finished correctly
-
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-5
-Received lock_reduction for object 0
-reduce_lock fini, etat = RLC
-Request finished correctly
-
-lock_read fini, etat = RLT
-unlock fini, etat = RLC
-
-Requesting lock_write for object 0
-Received invalidate_reader for object 0
-invalidate_reader fini, etat = NL
-Received invalidate_reader for object 0
-invalidate_reader fini, etat = NL
-Request finished correctly
-
-lock_read fini, etat = RLT
-unlock fini, etat = RLC
-lock_read fini, etat = RLT
-unlock fini, etat = RLC
-
-Requesting lock_write for object 0
-Received invalidate_reader for object 0
-invalidate_reader fini, etat = NL
-Received invalidate_writer for object 0
-invalidate_writer etat illogique : NL
-invalidate_writer fini, etat = NL
-Request finished correctly
-
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-5
-Request finished correctly
-
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_read fini, etat = RLT_WLC
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
-lock_write fini, etat = WLT
-unlock fini, etat = WLC
+8
 4
+7
+6
+6
+3
+invalidate_writer etat illogique : NL
+54
+
+4
+7
+3
+
+Compteur théorique (somme des valeurs précédentes) :
+102
+
+Compteur réel :
+54

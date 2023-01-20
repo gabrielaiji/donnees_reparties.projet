@@ -11,7 +11,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 	public int id;
 	public Client client;
 	
-	public Lock droit_de_modif_etat;
 
 	public final Boolean affiche = false;
 
@@ -20,8 +19,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.id = id;
 		this.client = client;
 		this.etat = EtatLockClient.NL;
-
-		this.droit_de_modif_etat = new ReentrantLock();
 	}
 
 	public SharedObject(Client client, int id) throws RemoteException{
@@ -29,7 +26,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.client = client;
 		this.etat = EtatLockClient.NL;
 
-		this.droit_de_modif_etat = new ReentrantLock();
 	}
 
 	// invoked by the user program on the client node
@@ -45,8 +41,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				case WLC:
 					etat = EtatLockClient.RLT_WLC;
 					break;
-				default:
-					//TODO
 			}
 			
 		}catch(Exception e){
@@ -68,8 +62,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			case WLC:
 				etat = EtatLockClient.WLT;
 				break;
-			default:
-				//TODO
 
 		}
 		if(affiche){
@@ -84,18 +76,15 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			case WLT:
 			case RLT_WLC:
 				etat = EtatLockClient.WLC;
-				this.notify();
 				break;
 			case RLT:
 				etat = EtatLockClient.RLC;
-				this.notify();
 				break;
 			default:
-				if(affiche){
-					System.out.println("unlock etat illogique : " +etat.toString());
-				}
+				System.out.println("unlock etat illogique : " +etat.toString());
 
 		}
+		this.notify();
 		if(affiche){
 			System.out.println("unlock fini, etat = " +etat.toString());
 		}
@@ -121,9 +110,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				etat = EtatLockClient.RLT;
 				break;
 			default:
-			if(affiche){
-				System.out.println("reduce_lock etat illogique : " +etat.toString());
-			}
+			System.out.println("reduce_lock etat illogique : " +etat.toString());
 		}
 		if(affiche){
 			System.out.println("reduce_lock fini, etat = " +etat.toString());
@@ -147,9 +134,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				etat = EtatLockClient.NL;
 				break;
 			default:
-				if(affiche){
-					System.out.println("invalidate_reader etat illogique : " +etat.toString());
-				}
+				System.out.println("invalidate_reader etat illogique : " +etat.toString());
 		}
 		if(affiche){
 			System.out.println("invalidate_reader fini, etat = " +etat.toString());
@@ -172,9 +157,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				etat = EtatLockClient.NL;
 				break;
 			default :
-				if(affiche){
-					System.out.println("invalidate_writer etat illogique : " +etat.toString());
-				}
+				System.out.println("invalidate_writer etat illogique : " +etat.toString());
 				
 		}
 		if(affiche){

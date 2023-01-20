@@ -29,15 +29,16 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public void register(String name, int id) throws java.rmi.RemoteException{
-		name_to_Id.put(name,id);
-		
+		System.out.println("registering object "+id);
+		if(lookup(name) == -1){
+			name_to_Id.put(name,id);
+		}
 	}
 
 	public int create(Object o) throws java.rmi.RemoteException{
 		int id = createId();
 		ServerObject so = new ServerObject(id, o);
 		id_to_Objects.put(id, so);
-
 		return id;
 	}
 

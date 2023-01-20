@@ -1,22 +1,26 @@
 javac *.java
 
 java Server &
-
-pidServer=$!
-
-sleep 5
+sleep 3
 
 echo "" > out.txt
 
-for i in {1..3}
+java Synchro 0 >> out.txt &
+sleep 3
+
+for i in {1..10}
 do
     java Synchro $i >> out.txt &
 done
 
-sleep 10 # plutôt wait
+sleep 5 # plutôt wait
 
-awk '{ sum += $1 } END { print sum }' out.txt & # marche pas
+echo -e "\nCompteur théorique (somme des valeurs précédentes) :" >> out.txt
 
-java SynchroRead >> out.txt & # marche pas
+awk '{ sum += $1 } END { print sum }' out.txt >> out.txt
 
-killall -KILL java &
+echo -e "\nCompteur réel :" >> out.txt
+
+java SynchroRead >> out.txt
+
+killall -KILL java
