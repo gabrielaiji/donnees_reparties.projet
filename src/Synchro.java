@@ -50,7 +50,6 @@ public class Synchro{
             }
         }
         System.out.println(compteurLocal);
-        //System.exit(0);
 	}
 
 }

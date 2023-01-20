@@ -10,8 +10,10 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 	public Object object;
 
 	public Lock droit_de_modif_etat;
-
 	public ArrayList<Client_itf> clients;
+
+	//TODO remove
+	private final Boolean affiche = false;
 
 	public ServerObject(int id, Object object) throws RemoteException{
 		this.id = id;
@@ -49,7 +51,9 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				break;
 		}
 		droit_de_modif_etat.unlock();
-		printEtats("lock_read()");
+		if(affiche){
+			printEtats("lock_read()");
+		}
 		return obj;
 	}
 	public Object lock_write(Client_itf client){
@@ -88,7 +92,9 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				break;
 		}
 		droit_de_modif_etat.unlock();
-		printEtats("lock_write()");
+		if(affiche){
+			printEtats("lock_write()");
+		}
 		return obj;
 	}
 
@@ -98,7 +104,9 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 
 			case NL:
 				etat = EtatLockServer.NL;
-				System.out.println("Unlock objet deja unlocked ?");
+				if(affiche){
+					System.out.println("Unlock objet deja unlocked ?");
+				}
 				break;
 			case RL:
 				clients.remove(client);
@@ -112,17 +120,22 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 					etat = EtatLockServer.NL;
 				}
 				else{
-					System.err.println("Il y avait plusieurs redacteurs ?");
+					if(affiche){
+						System.err.println("Il y avait plusieurs redacteurs ?");
+					}
 				}
 				
 				break;
 
 		}
 		droit_de_modif_etat.unlock();
-		printEtats("unlock()");
+		if(affiche){
+			printEtats("unlock()");
+		}
 	}
 
 	public void printEtats(String func){
+		
 		System.out.println("---------------------");
 		System.out.println("Objet "+id+" ("+func+")");
 		System.out.println("Etat : "+etat);

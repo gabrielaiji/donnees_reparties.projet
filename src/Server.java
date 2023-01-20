@@ -10,6 +10,8 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	HashMap<String, Integer> name_to_Id;
 	int idCompteur;
 
+	private static final Boolean affiche = false;
+
 	public Server() throws RemoteException{
 		id_to_Objects = new HashMap<Integer, ServerObject>();
 		name_to_Id = new HashMap<String, Integer>();
@@ -40,7 +42,9 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public Object lock_read(int id, Client_itf client) throws java.rmi.RemoteException{
-		System.out.println("Received lock_read request of "+id);
+		if(affiche){
+			System.out.println("Received lock_read request of "+id);
+		}
 		if(! id_to_Objects.containsKey(id)){
 			System.err.println("id n'existe pas (lock_read)");
 		}
@@ -53,7 +57,9 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 
 	public Object lock_write(int id, Client_itf client) throws java.rmi.RemoteException{
-		System.out.println("Received lock_write request of "+id);
+		if(affiche){
+			System.out.println("Received lock_write request of "+id);
+		}
 		if(! id_to_Objects.containsKey(id)){
 			System.err.println("id n'existe pas (lock_write)");
 		}
@@ -78,7 +84,9 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	public static void main(String[] args){
 		try {
-			System.out.println("Launch of Server");
+			if(affiche){
+				System.out.println("Launch of Server");
+			}
 			int port = 4000;
 			Server server = new Server();
 			Registry registry = LocateRegistry.createRegistry(port);
