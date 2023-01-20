@@ -1,30 +1,35 @@
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerObject extends UnicastRemoteObject implements ServerObject_itf{
 	public EtatLockServer etat;
 	public int id;
 	public Object object;
 
+	public Lock droit_de_modif_etat;
 	public ArrayList<Client_itf> clients;
+
+	//TODO remove
+	private final Boolean affiche = false;
 
 	public ServerObject(int id, Object object) throws RemoteException{
 		this.id = id;
 		this.object = object;
 		this.etat = EtatLockServer.NL;
 
+		this.droit_de_modif_etat = new ReentrantLock();
 		clients = new ArrayList<Client_itf>();
 	}
 
-	public Object lock_read(Client_itf client){
+	public synchronized Object lock_read(Client_itf client){
+		droit_de_modif_etat.lock();
 		Object obj = this.object;
 		switch(etat){
 
 			case NL:
-				clients.add(client);
-				etat = EtatLockServer.RL;
-				break;
 			case RL:
 				clients.add(client);
 				etat = EtatLockServer.RL;
@@ -42,10 +47,14 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				etat = EtatLockServer.RL;
 				break;
 		}
-		printEtats("lock_read()");
+		droit_de_modif_etat.unlock();
+		if(affiche){
+			printEtats("lock_read()");
+		}
 		return obj;
 	}
-	public Object lock_write(Client_itf client){
+	public synchronized Object lock_write(Client_itf client){
+		droit_de_modif_etat.lock();
 		Object obj = this.object;
 		switch(etat){
 
@@ -79,11 +88,15 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				etat = EtatLockServer.WL;
 				break;
 		}
-		printEtats("lock_write()");
+		droit_de_modif_etat.unlock();
+		if(affiche){
+			printEtats("lock_write()");
+		}
 		return obj;
 	}
 
-	public void unlock(Client_itf client){ //Inutile ?
+	public synchronized void unlock(Client_itf client){ //Inutile ?
+		droit_de_modif_etat.lock();
 		switch(etat){
 
 			case NL:
@@ -108,11 +121,14 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 				break;
 
 		}
-		printEtats("unlock()");
-		return ;
+		droit_de_modif_etat.unlock();
+		if(affiche){
+			printEtats("unlock()");
+		}
 	}
 
 	public void printEtats(String func){
+		
 		System.out.println("---------------------");
 		System.out.println("Objet "+id+" ("+func+")");
 		System.out.println("Etat : "+etat);
