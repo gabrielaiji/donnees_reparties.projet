@@ -1,40 +1,30 @@
 
+4
+unlock etat illogique : NL
+unlock etat illogique : NL
 5
+6
+unlock etat illogique : NL
+8
+unlock etat illogique : NL
+4
 unlock etat illogique : NLunlock etat illogique : NL
 
-unlock etat illogique : NL
-invalidate_reader etat illogique : NL
-invalidate_reader etat illogique : NL
-invalidate_reader etat illogique : NL
-5
+8
+9
 unlock etat illogique : NL
 unlock etat illogique : NL
-invalidate_reader etat illogique : NL
-invalidate_reader etat illogique : NL
-6
-unlock etat illogique : NL
-unlock etat illogique : NL
-unlock etat illogique : NL
-unlock etat illogique : NL
-invalidate_reader etat illogique : NL
-invalidate_reader etat illogique : NL
-invalidate_reader etat illogique : NL
-4
-unlock etat illogique : NL
-reduce_lock etat illogique : NL
-4
-invalidate_reader etat illogique : WLC
-5
-4
-3
-6
-invalidate_writer etat illogique : NL
-5
 7
+object 0 still not created. invalidate_reader validated.
+3
+unlock etat illogique : NL
+5
+unlock etat illogique : NL
+6
 
 Compteur théorique (somme des valeurs précédentes) :
-54
+65
 
 Compteur réel :
 unlock etat illogique : NL
-46
+65
