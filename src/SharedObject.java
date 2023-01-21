@@ -109,6 +109,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			case RLT_WLC:
 				etat = EtatLockClient.RLT;
 				break;
+			case NL:
+				break;
 			default:
 			System.out.println("reduce_lock etat illogique : " +etat.toString());
 		}
@@ -133,6 +135,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				}
 				etat = EtatLockClient.NL;
 				break;
+			case NL:
+				break;
 			default:
 				System.out.println("invalidate_reader etat illogique : " +etat.toString());
 		}
@@ -155,6 +159,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 					e.printStackTrace();
 				}
 				etat = EtatLockClient.NL;
+				break;
+			case NL:
 				break;
 			default :
 				System.out.println("invalidate_writer etat illogique : " +etat.toString());

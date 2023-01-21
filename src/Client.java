@@ -50,8 +50,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 				Object o = server.lock_read(id, client);
 				SharedObject so = new SharedObject(client, id, o);
 				so.unlock();
+				so.etat = EtatLockClient.NL;
 				
 				id_to_Objects.put(id, so);
+				//this.notify();
 				return so;
 			}
 			else{
@@ -167,8 +169,13 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if(affiche){
 			System.out.println("Received invalidate_reader for object " +id);
 		}
-		SharedObject sharedObj = id_to_Objects.get(id);
-		sharedObj.invalidate_reader();
+		if(!id_to_Objects.containsKey(id)){
+			System.out.println("object "+id+" still not created. invalidate_reader validated.");
+		}
+		else{
+			SharedObject sharedObj = id_to_Objects.get(id);
+			sharedObj.invalidate_reader();
+		}
 	}
 
 
