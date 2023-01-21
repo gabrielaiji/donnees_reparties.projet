@@ -26,10 +26,10 @@ public class Synchro{
 		
 		// look up the IRC object in the name server
 		// if not found, create it, and register it in the name server
-		SharedObject sharedObject = Client.lookup("SYNCHRO");
-		if (sharedObject == null) {
-			sharedObject = Client.create(new MyInteger());
-			Client.register("SYNCHRO", sharedObject);
+		MyInteger_itf myInteger = (MyInteger_itf)Client.lookup("SYNCHRO");
+		if (myInteger == null) {
+			myInteger = (MyInteger_itf)Client.create(new MyInteger());
+			Client.register("SYNCHRO", myInteger);
 		}
 		
         Random ran = new Random();
@@ -38,15 +38,15 @@ public class Synchro{
             int choix = ran.nextInt(2);
 
             if(choix == 0){
-                sharedObject.lock_write();
-                ((MyInteger) sharedObject.obj).incr();
-                sharedObject.unlock();
+                myInteger.lock_write();
+                myInteger.incr();
+                myInteger.unlock();
                 compteurLocal ++;
             }
             else{
-                sharedObject.lock_read();
-                ((MyInteger) sharedObject.obj).getInt();
-                sharedObject.unlock();
+                myInteger.lock_read();
+                myInteger.getInt();
+                myInteger.unlock();
             }
         }
         System.out.println(compteurLocal);

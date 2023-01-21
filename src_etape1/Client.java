@@ -3,12 +3,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.rmi.registry.*;
 import java.rmi.Naming;
-import java.lang.reflect.Constructor;
 import java.net.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 
-	public static HashMap<Integer, SharedObject_itf> id_to_Objects;
+	public static HashMap<Integer, SharedObject> id_to_Objects;
 	//public static HashMap<String, SharedObject> name_to_Objects;
 	public static Server_itf server;
 	public static Client client;
@@ -34,7 +33,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			client = new Client();
 			connectToServer();
-			id_to_Objects = new HashMap<Integer, SharedObject_itf>();
+			id_to_Objects = new HashMap<Integer, SharedObject>();
 			name = n;
 		}
 		catch(Exception e){
@@ -48,14 +47,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			int id = server.lookup(name);
 			if (id != -1){
-				/**
-				 Object o = lock_read(id);
-				 SharedObject so = new SharedObject(client, id, o);
-				 so.unlock();
-				 */
-
-
-				SharedObject so = new SharedObject(client, id);
+				Object o = server.lock_read(id, client);
+				SharedObject so = new SharedObject(client, id, o);
+				//so.unlock(); inutile ?
+				//so.etat = EtatLockClient.NL; inutile ?
+				
 				id_to_Objects.put(id, so);
 				return so;
 			}
@@ -77,11 +73,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}		
 	
 	// binding in the name server
-	public static void register(String name, SharedObject_itf so) {// Pk le SharedObject et pas l'obj directement ?
+	public static void register(String name, SharedObject so) {// Pk le SharedObject et pas l'obj directement ?
 		try{
 			//int id = server.lookup(name);
 			//SharedObject sharedObj = so;
-			int id = ((SharedObject) so).id;
+			int id = so.id;
 
 			server.register(name, id);
 
@@ -120,40 +116,42 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// request a read lock from the server
 	public static Object lock_read(int id) {
-		SharedObject_itf sharedObj = id_to_Objects.get(id);
-		Object obj = ((SharedObject) sharedObj).obj;
+		//SharedObject sharedObj = id_to_Objects.get(id);
+		//Object obj = sharedObj.obj;
 		if(affiche){
 			System.out.println("\nRequesting lock_read for object " +id);
 		}
 		try{
-			obj = server.lock_read(id, client);
+			Object obj = server.lock_read(id, client);
 			if(affiche){
 				System.out.println("Request finished correctly\n");
 			}
+			return obj;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		return obj;
+		System.out.println("Request lock_read for object " +id+" failed\n");
+		return null;
 	}
 
 	// request a write lock from the server
 	public static Object lock_write (int id) {
+		//SharedObject sharedObj = id_to_Objects.get(id);
+		//Object obj = sharedObj.obj;
 		if(affiche){
 			System.out.println("\nRequesting lock_write for object " +id);
 		}
-		SharedObject_itf sharedObj = id_to_Objects.get(id);
-		Object obj = ((SharedObject) sharedObj).obj;
 		try{
-			obj = server.lock_write(id, client);
+			Object obj = server.lock_write(id, client);
 			if(affiche){
 				System.out.println("Request finished correctly\n");
 			}
+			return obj;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		return obj;
+		System.out.println("Request lock_write for object " +id+" failed\n");
+		return null;
 	}
 
 	// receive a lock reduction request from the server
@@ -161,7 +159,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if(affiche){
 			System.out.println("Received lock_reduction for object " +id);
 		}
-		SharedObject sharedObj = (SharedObject) id_to_Objects.get(id);
+		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.reduce_lock();
 		return sharedObj.obj;
 	}
@@ -172,8 +170,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if(affiche){
 			System.out.println("Received invalidate_reader for object " +id);
 		}
-		SharedObject sharedObj = (SharedObject) id_to_Objects.get(id);
-		sharedObj.invalidate_reader();
+
+		if(id_to_Objects.containsKey(id)){
+			SharedObject sharedObj = id_to_Objects.get(id);
+			sharedObj.invalidate_reader();
+		}
+		else if(affiche){
+			System.out.println("object "+id+" still not created. invalidate_reader validated.");
+		}
+		
 	}
 
 
@@ -182,24 +187,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if(affiche){
 			System.out.println("Received invalidate_writer for object " +id);
 		}
-		SharedObject sharedObj = (SharedObject) id_to_Objects.get(id);
+		SharedObject sharedObj = id_to_Objects.get(id);
 		sharedObj.invalidate_writer();
 		return sharedObj.obj;
 	}
-
-	// create stub
-	public static SharedObject create_stub(Client client, int id, Object o){
-		try{
-			Class<?> classe = o.getClass();
-			String nomStub = classe.getName() + "_stub";
-			Constructor<?> constructeur = Class.forName(nomStub).getConstructor(Client.class, Integer.class, classe);
-			SharedObject so = (SharedObject) constructeur.newInstance(client, id, o);
-			return so;
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class SharedObject extends UnicastRemoteObject implements Serializable, SharedObject_itf {
 	public EtatLockClient etat;
-	public Object obj;
+	public transient Object obj;	// Etape 3 : ajout du mot-clé "transient"
 	public int id;
 	public Client client;
 	
@@ -173,5 +173,15 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			System.out.println("invalidate_writer fini, etat = " +etat.toString());
 		}
 		return obj;
+	}
+
+	// Spécialisation de la méthode Object readResolve()
+	private Object readResolve() {
+		SharedObject so = (SharedObject)client.id_to_Objects.get(this.id);
+
+		if (so == null) {
+			return this;
+		}
+		return so;
 	}
 }

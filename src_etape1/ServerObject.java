@@ -27,26 +27,23 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 	public synchronized Object lock_read(Client_itf client){
 		droit_de_modif_etat.lock();
 		Object obj = this.object;
-		switch(etat){
 
-			case NL:
-			case RL:
-				clients.add(client);
-				etat = EtatLockServer.RL;
-				break;
-			case WL:
-				for(Client_itf c : clients){
-					try{
-						obj = c.reduce_lock(id);
-						this.object = obj;
-					}catch(Exception e){
-						e.printStackTrace();
-					}
+		if(etat == EtatLockServer.WL ){
+			for(Client_itf c : clients){
+				try{
+					obj = c.reduce_lock(id);
+					this.object = obj;
+				}catch(Exception e){
+					e.printStackTrace();
 				}
-				clients.add(client);
-				etat = EtatLockServer.RL;
-				break;
+			}
 		}
+
+		if(!clients.contains(client)){
+			clients.add(client);
+		}
+		etat = EtatLockServer.RL;
+
 		droit_de_modif_etat.unlock();
 		if(affiche){
 			printEtats("lock_read()");
@@ -70,7 +67,8 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 						e.printStackTrace();
 					}
 				}
-				clients = new ArrayList<Client_itf>();
+				//clients = new ArrayList<Client_itf>();
+				clients.clear();
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;
@@ -83,7 +81,8 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 						e.printStackTrace();
 					}
 				}
-				clients = new ArrayList<Client_itf>();
+				//clients = new ArrayList<Client_itf>();
+				clients.clear();
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;

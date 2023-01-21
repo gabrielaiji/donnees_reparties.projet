@@ -7,7 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ServerObject extends UnicastRemoteObject implements ServerObject_itf{
 	public EtatLockServer etat;
 	public int id;
-	public Object object;
+	public transient Object object;
+	public Server server;
 
 	public Lock droit_de_modif_etat;
 	public ArrayList<Client_itf> clients;
@@ -15,9 +16,10 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 	//TODO remove
 	private final Boolean affiche = false;
 
-	public ServerObject(int id, Object object) throws RemoteException{
+	public ServerObject(int id, Object object, Server server) throws RemoteException{
 		this.id = id;
 		this.object = object;
+		this.server = server;
 		this.etat = EtatLockServer.NL;
 
 		this.droit_de_modif_etat = new ReentrantLock();
@@ -142,5 +144,15 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		}
 		System.out.println();
 		
+	}
+
+	// Spécialisation de la méthode Object readResolve()
+	private Object readResolve() {
+		ServerObject so = (ServerObject)server.id_to_Objects.get(this.id);
+
+		if (so == null) {
+			return this;
+		}
+		return so;
 	}
 }

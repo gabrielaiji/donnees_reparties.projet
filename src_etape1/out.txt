@@ -1,18 +1,19 @@
 
-5
-7
+4
+3
 6
 7
-5
+4
+9
 7
-5
+invalidate_writer etat illogique : WLT
 6
-8
-7
-6
+3
+4
+2
 
 Compteur théorique (somme des valeurs précédentes) :
-69
+55
 
 Compteur réel :
-69
+55

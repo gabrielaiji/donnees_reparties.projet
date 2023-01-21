@@ -6,9 +6,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Server extends UnicastRemoteObject implements Server_itf {
-	HashMap<Integer, ServerObject> id_to_Objects;
-	HashMap<String, Integer> name_to_Id;
-	int idCompteur;
+	public HashMap<Integer, ServerObject> id_to_Objects;
+	public HashMap<String, Integer> name_to_Id;
+	public int idCompteur;
 
 	private static final Boolean affiche = false;
 
@@ -37,7 +37,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	public int create(Object o) throws java.rmi.RemoteException{
 		int id = createId();
-		ServerObject so = new ServerObject(id, o);
+		ServerObject so = new ServerObject(id, o, this);
 		id_to_Objects.put(id, so);
 		return id;
 	}
@@ -85,9 +85,8 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	public static void main(String[] args){
 		try {
-			if(affiche){
-				System.out.println("Launch of Server");
-			}
+			System.out.println("Launch of Server");
+
 			int port = 4000;
 			Server server = new Server();
 			Registry registry = LocateRegistry.createRegistry(port);
