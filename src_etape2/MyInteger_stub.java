@@ -6,11 +6,12 @@ public class MyInteger_stub extends SharedObject implements MyInteger_itf, java.
 		super(client, id, object);
 	}
 	public void incr() {
-		MyInteger s = (MyInteger) obj;
+		MyInteger s = (MyInteger)obj;
 		s.incr();
 	}
 	public int getInt() {
-		MyInteger s = (MyInteger) obj;
+		MyInteger s = (MyInteger)obj;
 		return s.getInt();
 	}
+
 }
