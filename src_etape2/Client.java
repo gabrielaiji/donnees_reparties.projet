@@ -50,7 +50,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			if (id != -1){
 				/**
 				 Object o = lock_read(id);
-				 SharedObject so = new SharedObject(client, id);
+				 SharedObject so = new SharedObject(client, id, o);
 				 so.unlock();
 				 */
 

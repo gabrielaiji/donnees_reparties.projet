@@ -47,10 +47,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			int id = server.lookup(name);
 			if (id != -1){
-				SharedObject s = new SharedObject(client, id);
+				Object o = server.lock_read(id, client);
+				SharedObject so = new SharedObject(client, id, o);
+				so.unlock();
 				
-				id_to_Objects.put(id, s);
-				return s;
+				id_to_Objects.put(id, so);
+				return so;
 			}
 			else{
 				if(affiche){
