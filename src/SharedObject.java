@@ -1,6 +1,7 @@
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 // utiliser en plus  java.util.concurrent.locks.Condition; ??
@@ -11,7 +12,12 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 	public int id;
 	public Client client;
 	
+	/** 
+	public Lock droit_de_modif_etat;
+	public Boolean client_is_changing_state;
+	public Condition client_pas_en_cours_modif;*/
 
+	//TODO : remove
 	public final Boolean affiche = false;
 
 	public SharedObject(Client client, int id, Object object) throws RemoteException{
@@ -21,16 +27,8 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 		this.etat = EtatLockClient.NL;
 	}
 
-	public SharedObject(Client client, int id) throws RemoteException{
-		this.id = id;
-		this.client = client;
-		this.etat = EtatLockClient.NL;
-
-	}
-
 	// invoked by the user program on the client node
 	public void lock_read() {
-		
 		try{
 			switch(etat){
 				case NL:
@@ -41,6 +39,9 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 				case WLC:
 					etat = EtatLockClient.RLT_WLC;
 					break;
+				default:
+					etat = EtatLockClient.RLT;
+					System.out.println("lock_read etat illogique : " +etat.toString());
 			}
 			
 		}catch(Exception e){
@@ -53,7 +54,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 
 	// invoked by the user program on the client node
 	public void lock_write() {
-
 		switch(etat){
 
 			case NL:
@@ -62,6 +62,9 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 			case WLC:
 				etat = EtatLockClient.WLT;
 				break;
+			default:
+				etat = EtatLockClient.WLT;
+				System.out.println("lock_write etat illogique : " +etat.toString());
 
 		}
 		if(affiche){
@@ -122,6 +125,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() {
+
 		switch(etat){
 
 			case RLC:
@@ -146,6 +150,7 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 	}
 
 	public synchronized Object invalidate_writer() {
+
 		switch(etat){
 
 			case WLC:
@@ -159,8 +164,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 					e.printStackTrace();
 				}
 				etat = EtatLockClient.NL;
-				break;
-			case NL:
 				break;
 			default :
 				System.out.println("invalidate_writer etat illogique : " +etat.toString());

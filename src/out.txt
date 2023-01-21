@@ -1,30 +1,19 @@
 
 4
-unlock etat illogique : NL
-unlock etat illogique : NL
-5
-6
-unlock etat illogique : NL
-8
-unlock etat illogique : NL
-4
-unlock etat illogique : NLunlock etat illogique : NL
-
-8
-9
-unlock etat illogique : NL
-unlock etat illogique : NL
-7
-object 0 still not created. invalidate_reader validated.
 3
-unlock etat illogique : NL
-5
-unlock etat illogique : NL
 6
+7
+4
+9
+7
+invalidate_writer etat illogique : WLT
+6
+3
+4
+2
 
 Compteur théorique (somme des valeurs précédentes) :
-65
+55
 
 Compteur réel :
-unlock etat illogique : NL
-65
+55

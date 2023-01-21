@@ -49,11 +49,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			if (id != -1){
 				Object o = server.lock_read(id, client);
 				SharedObject so = new SharedObject(client, id, o);
-				so.unlock();
-				so.etat = EtatLockClient.NL;
+				//so.unlock(); inutile ?
+				//so.etat = EtatLockClient.NL; inutile ?
 				
 				id_to_Objects.put(id, so);
-				//this.notify();
 				return so;
 			}
 			else{
@@ -117,40 +116,42 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// request a read lock from the server
 	public static Object lock_read(int id) {
-		SharedObject sharedObj = id_to_Objects.get(id);
-		Object obj = sharedObj.obj;
+		//SharedObject sharedObj = id_to_Objects.get(id);
+		//Object obj = sharedObj.obj;
 		if(affiche){
 			System.out.println("\nRequesting lock_read for object " +id);
 		}
 		try{
-			obj = server.lock_read(id, client);
+			Object obj = server.lock_read(id, client);
 			if(affiche){
 				System.out.println("Request finished correctly\n");
 			}
+			return obj;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		return obj;
+		System.out.println("Request lock_read for object " +id+" failed\n");
+		return null;
 	}
 
 	// request a write lock from the server
 	public static Object lock_write (int id) {
+		//SharedObject sharedObj = id_to_Objects.get(id);
+		//Object obj = sharedObj.obj;
 		if(affiche){
 			System.out.println("\nRequesting lock_write for object " +id);
 		}
-		SharedObject sharedObj = id_to_Objects.get(id);
-		Object obj = sharedObj.obj;
 		try{
-			obj = server.lock_write(id, client);
+			Object obj = server.lock_write(id, client);
 			if(affiche){
 				System.out.println("Request finished correctly\n");
 			}
+			return obj;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		return obj;
+		System.out.println("Request lock_write for object " +id+" failed\n");
+		return null;
 	}
 
 	// receive a lock reduction request from the server
@@ -169,13 +170,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if(affiche){
 			System.out.println("Received invalidate_reader for object " +id);
 		}
-		if(!id_to_Objects.containsKey(id)){
-			System.out.println("object "+id+" still not created. invalidate_reader validated.");
-		}
-		else{
+
+		if(id_to_Objects.containsKey(id)){
 			SharedObject sharedObj = id_to_Objects.get(id);
 			sharedObj.invalidate_reader();
 		}
+		else if(affiche){
+			System.out.println("object "+id+" still not created. invalidate_reader validated.");
+		}
+		
 	}
 
 
