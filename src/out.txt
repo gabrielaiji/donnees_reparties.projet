@@ -1,18 +1,18 @@
 
 5
-7
-6
-7
 5
-7
+4
+6
+4
+6
+6
 5
-6
-8
-7
-6
+5
+5
+3
 
 Compteur théorique (somme des valeurs précédentes) :
-69
+54
 
 Compteur réel :
-69
+54
