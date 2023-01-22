@@ -39,11 +39,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			int id = server.lookup(name);
 			if (id != -1){
-				/**
-				 Object o = lock_read(id);
-				 SharedObject so = new SharedObject(client, id, o);
-				 so.unlock();
-				 */
 
 				Object o = server.lock_read(id, client);
 				SharedObject so = create_stub(client, id, o);
@@ -70,8 +65,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// binding in the name server
 	public static void register(String name, SharedObject_itf so) {// Pk le SharedObject et pas l'obj directement ?
 		try{
-			//int id = server.lookup(name);
-			//SharedObject sharedObj = so;
 			int id = ((SharedObject) so).id;
 
 			server.register(name, id);
@@ -87,12 +80,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			int id = server.create(o);
 			SharedObject so = create_stub(client, id, o);
 			id_to_Objects.put(id, so);
-			//TODO descripteur : en fait non ?
+
 			return so;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		//TODO exceptions
+
 		return null;
 	}
 
@@ -111,8 +104,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// request a read lock from the server
 	public static Object lock_read(int id) {
-		// SharedObject_itf sharedObj = id_to_Objects.get(id);
-		// Object obj = ((SharedObject) sharedObj).obj;
 		if(affiche){
 			System.out.println("\nRequesting lock_read for object " +id);
 		}
@@ -134,8 +125,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if(affiche){
 			System.out.println("\nRequesting lock_write for object " +id);
 		}
-		// SharedObject_itf sharedObj = id_to_Objects.get(id);
-		// Object obj = ((SharedObject) sharedObj).obj;
 		try{
 			Object obj = server.lock_write(id, client);
 			if(affiche){
@@ -191,7 +180,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try{
 			Class<?> classe = o.getClass();
 			String nomStub = classe.getName() + "_stub";
-			// Constructor<?> constructeur = Class.forName(nomStub).getConstructor(Client.class, Integer.class, Object.class);
 			Constructor<?> constructeur = Class.forName(nomStub).getConstructors()[0];
 			SharedObject so = (SharedObject) constructeur.newInstance(client, id, o);
 			return so;
