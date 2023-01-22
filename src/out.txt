@@ -1,38 +1,18 @@
 
-<<<<<<< HEAD
-3
-8
+5
+4
 6
-2
 4
-7
-5
-1
 4
-7
 5
+4
+4
+6
+7
+3
 
 Compteur théorique (somme des valeurs précédentes) :
 52
 
 Compteur réel :
 52
-=======
-5
-5
-4
-6
-4
-6
-6
-5
-5
-5
-3
-
-Compteur théorique (somme des valeurs précédentes) :
-54
-
-Compteur réel :
-54
->>>>>>> 63d44b272e26f846a7d1184a6db9c5399d911d69
