@@ -22,7 +22,7 @@ public class Synchro{
 		myName = argv[0];
 	
 		// initialize the system
-		Client.init(myName);
+		Client.init();
 		
 		// look up the IRC object in the name server
 		// if not found, create it, and register it in the name server

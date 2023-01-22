@@ -13,7 +13,6 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 	public Lock droit_de_modif_etat;
 	public ArrayList<Client_itf> clients;
 
-	//TODO remove
 	private final Boolean affiche = false;
 
 	public ServerObject(int id, Object object, Server server) throws RemoteException{
@@ -46,6 +45,13 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		}
 		etat = EtatLockServer.RL;
 
+
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+
+			e1.printStackTrace();
+		}
 		droit_de_modif_etat.unlock();
 		if(affiche){
 			printEtats("lock_read()");
@@ -69,7 +75,7 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 						e.printStackTrace();
 					}
 				}
-				//clients = new ArrayList<Client_itf>();
+
 				clients.clear();
 				clients.add(client);
 				etat = EtatLockServer.WL;
@@ -83,11 +89,17 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 						e.printStackTrace();
 					}
 				}
-				//clients = new ArrayList<Client_itf>();
+				
 				clients.clear();
 				clients.add(client);
 				etat = EtatLockServer.WL;
 				break;
+		}
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+
+			e1.printStackTrace();
 		}
 		droit_de_modif_etat.unlock();
 		if(affiche){
@@ -96,52 +108,11 @@ public class ServerObject extends UnicastRemoteObject implements ServerObject_it
 		return obj;
 	}
 
-	public synchronized void unlock(Client_itf client){ //Inutile ?
-		droit_de_modif_etat.lock();
-		switch(etat){
-
-			case NL:
-				etat = EtatLockServer.NL;
-				System.out.println("Unlock objet deja unlocked ?");
-				break;
-			case RL:
-				clients.remove(client);
-				if(clients.isEmpty()){
-					etat = EtatLockServer.NL;
-				}
-				break;
-			case WL:
-				clients.remove(client);
-				if(clients.isEmpty()){
-					etat = EtatLockServer.NL;
-				}
-				else{
-					System.err.println("Il y avait plusieurs redacteurs ?");
-				}
-				
-				break;
-
-		}
-		droit_de_modif_etat.unlock();
-		if(affiche){
-			printEtats("unlock()");
-		}
-	}
-
 	public void printEtats(String func){
 		
 		System.out.println("---------------------");
 		System.out.println("Objet "+id+" ("+func+")");
 		System.out.println("Etat : "+etat);
-		System.out.print("Clients : ");
-		try{
-			for(Client_itf client : clients){
-				System.out.print(client.getName() +";");
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
 		System.out.println();
 		
 	}

@@ -1,21 +1,13 @@
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-// utiliser en plus  java.util.concurrent.locks.Condition; ??
 
 public class SharedObject extends UnicastRemoteObject implements Serializable, SharedObject_itf {
 	public EtatLockClient etat;
 	public transient Object obj;	// Etape 3 : ajout du mot-clé "transient"
 	public int id;
 	public Client client;
-	
-	/** 
-	public Lock droit_de_modif_etat;
-	public Boolean client_is_changing_state;
-	public Condition client_pas_en_cours_modif;*/
+
 
 	//TODO : remove
 	public final Boolean affiche = false;

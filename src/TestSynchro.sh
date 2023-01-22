@@ -13,7 +13,7 @@ do
     java Synchro $i >> out.txt &
 done
 
-sleep 5 # plutôt wait
+sleep 10 # plutôt wait
 
 echo -e "\nCompteur théorique (somme des valeurs précédentes) :" >> out.txt
 

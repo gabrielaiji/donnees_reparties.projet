@@ -1,27 +1,19 @@
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
-import java.rmi.registry.*;
 import java.rmi.Naming;
 import java.lang.reflect.Constructor;
-import java.net.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 
 	public static HashMap<Integer, SharedObject_itf> id_to_Objects;
-	//public static HashMap<String, SharedObject> name_to_Objects;
 	public static Server_itf server;
 	public static Client client;
-	//TODO :remove
-	public static String name;
+
 	private static final Boolean affiche = false;
 
 	public Client() throws RemoteException {
 		super();
-	}
-
-	public String getName() throws java.rmi.RemoteException{
-		return name;
 	}
 
 
@@ -30,12 +22,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 ///////////////////////////////////////////////////
 
 	// initialization of the client layer
-	public static void init(String n) {
+	public static void init() {
 		try{
 			client = new Client();
 			connectToServer();
 			id_to_Objects = new HashMap<Integer, SharedObject_itf>();
-			name = n;
 		}
 		catch(Exception e){
 			e.printStackTrace();
