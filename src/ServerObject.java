@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ServerObject extends UnicastRemoteObject implements ServerObject_itf{
 	public EtatLockServer etat;
 	public int id;
-	public transient Object object;
+	public transient Object object;	// Etape 3 : ajout du mot-clé "transient"
 	public Server server;
 
 	public Lock droit_de_modif_etat;

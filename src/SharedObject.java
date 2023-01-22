@@ -8,8 +8,6 @@ public class SharedObject extends UnicastRemoteObject implements Serializable, S
 	public int id;
 	public Client client;
 
-
-	//TODO : remove
 	public final Boolean affiche = false;
 
 	public SharedObject(Client client, int id, Object object) throws RemoteException{
