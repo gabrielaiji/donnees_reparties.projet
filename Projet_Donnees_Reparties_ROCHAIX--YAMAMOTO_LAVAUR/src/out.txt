@@ -1,0 +1,18 @@
+
+5
+4
+6
+4
+4
+5
+4
+4
+6
+7
+3
+
+Compteur théorique (somme des valeurs précédentes) :
+52
+
+Compteur réel :
+52
