@@ -12,14 +12,14 @@ public class SynchroRead {
 		
 		// look up the IRC object in the name server
 		// if not found, create it, and register it in the name server
-		SharedObject sharedObject = Client.lookup("SYNCHRO");
-		if (sharedObject == null) {
-			sharedObject = Client.create(new MyInteger());
-			Client.register("SYNCHRO", sharedObject);
+		MyInteger_itf myInteger = (MyInteger_itf)Client.lookup("SYNCHRO");
+		if (myInteger == null) {
+			myInteger = (MyInteger_itf)Client.create(new MyInteger());
+			Client.register("SYNCHRO", myInteger);
 		}
-        sharedObject.lock_read();
-        int compteurFinale = ((MyInteger) sharedObject.obj).getInt();
-        sharedObject.unlock();
+        myInteger.lock_read();
+        int compteurFinale = myInteger.getInt();
+        myInteger.unlock();
 
         System.out.println(compteurFinale);
         System.exit(0);
